@@ -31,9 +31,14 @@ struct HabitView: View {
                 VStack(alignment: .leading) {
                     Text(habit.title)
                         .font(.headline)
-                    Text("Current: \(habit.daysFree)  |  Record: \(habit.recordDays)")
+                    Text("Current Streak: \(habit.daysFree) days")
                         .font(.caption)
                         .foregroundColor(.secondary)
+
+                    Text("🏆 \(habit.recordDisplayText)")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.yellow)
                 }
 
                 Spacer()
@@ -56,39 +61,24 @@ struct HabitView: View {
                     Button("Cancel", role: .cancel) { }
                 }
             }
-            Button(action: {
-                isEditingDate.toggle()
-            }) {
-                Text(isEditingDate ? "Hide Date Picker" : "Change Start Date")
-                    .font(.caption2)
-                    .foregroundColor(.blue)
-            }
-
-            if isEditingDate {
+            HStack {
                 DatePicker(
-                    "Start Date",
+                    "",
                     selection: $tempStartDate,
                     in: ...Date(),
                     displayedComponents: [.date]
                 )
+                .labelsHidden()
                 .datePickerStyle(.compact)
                 .onChange(of: tempStartDate) { _, newValue in
                     onDateChanged(newValue)
                 }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .background(Color(uiColor: UIColor.secondarySystemBackground))
+                .cornerRadius(6)
 
-                Button(action: {
-                    showResetRecordConfirmation = true
-                }) {
-                    Text("Reset Record")
-                        .font(.caption2)
-                        .foregroundColor(.red)
-                }
-                .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
-                    Button("Reset", role: .destructive) {
-                        onResetRecord()
-                    }
-                    Button("Cancel", role: .cancel) { }
-                }
+                Spacer()
             }
         }
         .padding()
@@ -97,4 +87,14 @@ struct HabitView: View {
         .cornerRadius(12)
         .padding(.horizontal)
     }
+}
+
+
+#Preview {
+    HabitView(
+        habit: Habit(id: UUID(), title: "Test Habit", startDate: Date(), isMain: false, recordDays: 5),
+        resetAction: {},
+        onDateChanged: { _ in },
+        onResetRecord: {}
+    )
 }

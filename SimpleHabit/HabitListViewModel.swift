@@ -8,14 +8,15 @@
 import Foundation
 
 class HabitListViewModel: ObservableObject {
-    @Published var habits: [Habit] = [
-        Habit(title: "Days Free", startDate: Date(), isMain: true),
-        Habit(title: "Workout", startDate: Date()),
-        Habit(title: "Reading", startDate: Date())
-    ]
+    private let habitsKey = "savedHabits"
+    @Published var habits: [Habit] = []
 
     var mainHabit: Habit? {
         habits.first(where: { $0.isMain })
+    }
+    
+    init() {
+        habits = loadHabits()
     }
 
     func resetStartDate(for id: UUID) {
@@ -25,6 +26,7 @@ class HabitListViewModel: ObservableObject {
             if updatedDays > habits[index].recordDays {
                 habits[index].recordDays = updatedDays
             }
+            saveHabits()
         }
     }
 
@@ -32,6 +34,7 @@ class HabitListViewModel: ObservableObject {
         for index in habits.indices {
             habits[index].isMain = (habits[index].id == id)
         }
+        saveHabits()
     }
 
     func updateStartDate(for id: UUID, to newDate: Date) {
@@ -41,12 +44,32 @@ class HabitListViewModel: ObservableObject {
             if updatedDays > habits[index].recordDays {
                 habits[index].recordDays = updatedDays
             }
+            saveHabits()
         }
     }
     
     func resetRecord(for id: UUID) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
             habits[index].recordDays = 1
+            saveHabits()
         }
+    }
+
+    private func saveHabits() {
+        if let data = try? JSONEncoder().encode(habits) {
+            UserDefaults.standard.set(data, forKey: habitsKey)
+        }
+    }
+
+    private func loadHabits() -> [Habit] {
+        if let data = UserDefaults.standard.data(forKey: habitsKey),
+           let saved = try? JSONDecoder().decode([Habit].self, from: data) {
+            return saved
+        }
+        return [
+            Habit(id: UUID(), title: "Days Free", startDate: Date(), isMain: true),
+            Habit(id: UUID(), title: "Workout", startDate: Date()),
+            Habit(id: UUID(), title: "Reading", startDate: Date())
+        ]
     }
 }

@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct Habit: Identifiable {
-    let id: UUID = UUID()
+struct Habit: Identifiable, Codable {
+    var id: UUID = UUID()
     var title: String
     var startDate: Date
     
@@ -20,5 +20,8 @@ struct Habit: Identifiable {
         let startOfToday = Calendar.current.startOfDay(for: Date())
         let days = Calendar.current.dateComponents([.day], from: startOfStartDate, to: startOfToday).day ?? 0
         return days + 1
+    }
+    var recordDisplayText: String {
+        "Record: \(recordDays) day" + (recordDays == 1 ? "" : "s")
     }
 }

@@ -44,73 +44,26 @@ struct ContentView: View {
                 .padding(.top, 0)
 
                 if let main = viewModel.habits.first(where: { $0.isMain }) {
-                    VStack(spacing: 4) {
-                        Text(main.title)
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        Text("Day \(main.daysFree)")
-                            .font(.system(size: 52, weight: .bold))
-                        Text("Record: \(main.daysFree) days")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(
-                        RoundedRectangle(cornerRadius: 20)
-                            .fill(Color(uiColor: UIColor.secondarySystemBackground))
+                    PriorityHabitView(
+                        habit: main,
+                        tempDate: mainTempDate,
+                        onDateChanged: { newDate in
+                            mainTempDate = newDate
+                            viewModel.updateStartDate(for: main.id, to: newDate)
+                        },
+                        onReset: {
+                            showMainResetConfirmation = true
+                        }
                     )
-                    .padding(.horizontal)
-                    .padding(.top, -8)
                     .onAppear {
                         mainTempDate = main.startDate
                     }
-
-                    // Start Date + Reset Button
-                    VStack(spacing: 16) {
-                        HStack {
-                            Text("Start Date:")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            DatePicker(
-                                "",
-                                selection: Binding(
-                                    get: { mainTempDate },
-                                    set: { newDate in
-                                        mainTempDate = newDate
-                                        viewModel.updateStartDate(for: main.id, to: newDate)
-                                    }
-                                ),
-                                in: ...Date(),
-                                displayedComponents: [.date]
-                            )
-                            .labelsHidden()
-                            .datePickerStyle(.compact)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 6)
-                            .background(Color(uiColor: UIColor.secondarySystemBackground))
-                            .cornerRadius(6)
+                    .alert("Reset \(main.title)?", isPresented: $showMainResetConfirmation) {
+                        Button("Reset", role: .destructive) {
+                            viewModel.resetStartDate(for: main.id)
                         }
-                        Button(action: {
-                            showMainResetConfirmation = true
-                        }) {
-                            Text("Reset to Today")
-                                .font(.caption)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 6)
-                                .background(Color.red.opacity(0.8))
-                                .foregroundColor(.white)
-                                .cornerRadius(6)
-                        }
-                        .alert("Reset \(main.title)?", isPresented: $showMainResetConfirmation) {
-                            Button("Reset", role: .destructive) {
-                                viewModel.resetStartDate(for: main.id)
-                            }
-                            Button("Cancel", role: .cancel) { }
-                        }
+                        Button("Cancel", role: .cancel) { }
                     }
-                    .padding()
                 }
 
                 Divider().padding(.vertical, 12)
