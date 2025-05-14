@@ -34,7 +34,7 @@ struct HabitView: View {
                 Button(action: {
                     showResetConfirmation = true
                 }) {
-                    Text("Reset Current Streak")
+                    Text("Reset to Day 1")
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
@@ -50,14 +50,10 @@ struct HabitView: View {
                 }
             }
 
-            Text("Current Streak: \(habit.daysFree) days")
-                .font(.caption)
-                .foregroundColor(.secondary)
-
-            Text("🏆 \(habit.recordDisplayText)")
+            Text("🔥 Current Streak: \(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
                 .font(.subheadline)
                 .fontWeight(.semibold)
-                .foregroundColor(.yellow)
+                .foregroundColor(.orange)
 
             HStack {
                 ProgressView(value: habit.streakProgress)
@@ -67,22 +63,47 @@ struct HabitView: View {
 
                 Spacer()
 
+                Menu {
+                    Button("Set Date Manually") {
+                        isEditingDate = true
+                    }
+                    Button(role: .destructive) {
+                        showResetRecordConfirmation = true
+                    } label: {
+                        Label("⚠️ Reset Record", systemImage: "exclamationmark.triangle")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.title3)
+                        .padding(.horizontal, 8)
+                        .foregroundColor(.primary)
+                }
+                .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
+                    Button("Reset", role: .destructive) {
+                        onResetRecord()
+                    }
+                    Button("Cancel", role: .cancel) { }
+                }
+            }
+            if isEditingDate {
                 DatePicker(
-                    "",
+                    "Start Date",
                     selection: $tempStartDate,
                     in: ...Date(),
                     displayedComponents: [.date]
                 )
-                .labelsHidden()
-                .datePickerStyle(.compact)
+                .datePickerStyle(.graphical)
+                .padding(.top, 8)
                 .onChange(of: tempStartDate) { _, newValue in
                     onDateChanged(newValue)
+                    isEditingDate = false
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 6)
-                .background(Color(uiColor: UIColor.secondarySystemBackground))
-                .cornerRadius(6)
             }
+
+            Text("🏆 \(habit.recordDisplayText)")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.yellow)
         }
         .padding()
         .frame(maxWidth: .infinity)

@@ -33,3 +33,7 @@ struct SubHabitView: View {
         .padding(.horizontal)
     }
 }
+
+#Preview {
+    SubHabitView(title: "Exercise", record: 15, day: 4)
+}
