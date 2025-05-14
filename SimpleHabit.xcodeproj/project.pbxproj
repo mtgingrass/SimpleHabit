@@ -13,6 +13,9 @@
 		1EB545B52DD3EAC70070B0A0 /* HabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B42DD3EAC70070B0A0 /* HabitView.swift */; };
 		1EB545B72DD411750070B0A0 /* PriorityHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */; };
 		1EB545BC2DD4387F0070B0A0 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */; };
+		1EB545BE2DD4C0DE0070B0A0 /* EllipsisMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545BD2DD4C0DE0070B0A0 /* EllipsisMenu.swift */; };
+		1EB545C02DD4C9620070B0A0 /* SetGoalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545BF2DD4C9620070B0A0 /* SetGoalView.swift */; };
+		1EB545C22DD4CEB90070B0A0 /* AboutAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +45,9 @@
 		1EB545B42DD3EAC70070B0A0 /* HabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitView.swift; sourceTree = "<group>"; };
 		1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityHabitView.swift; sourceTree = "<group>"; };
 		1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
+		1EB545BD2DD4C0DE0070B0A0 /* EllipsisMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EllipsisMenu.swift; sourceTree = "<group>"; };
+		1EB545BF2DD4C9620070B0A0 /* SetGoalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGoalView.swift; sourceTree = "<group>"; };
+		1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutAppView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -114,6 +120,9 @@
 			isa = PBXGroup;
 			children = (
 				1EB545782DD3B49D0070B0A0 /* ContentView.swift */,
+				1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */,
+				1EB545BF2DD4C9620070B0A0 /* SetGoalView.swift */,
+				1EB545BD2DD4C0DE0070B0A0 /* EllipsisMenu.swift */,
 				1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */,
 				1EB545B42DD3EAC70070B0A0 /* HabitView.swift */,
 				1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */,
@@ -282,11 +291,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EB545792DD3B49D0070B0A0 /* ContentView.swift in Sources */,
+				1EB545C02DD4C9620070B0A0 /* SetGoalView.swift in Sources */,
 				1EB545AD2DD3E80F0070B0A0 /* Habit.swift in Sources */,
 				1EB545B12DD3E86A0070B0A0 /* HabitListViewModel.swift in Sources */,
 				1EB545B52DD3EAC70070B0A0 /* HabitView.swift in Sources */,
+				1EB545C22DD4CEB90070B0A0 /* AboutAppView.swift in Sources */,
 				1EB545B72DD411750070B0A0 /* PriorityHabitView.swift in Sources */,
 				1EB545BC2DD4387F0070B0A0 /* TipJarView.swift in Sources */,
+				1EB545BE2DD4C0DE0070B0A0 /* EllipsisMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

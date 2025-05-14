@@ -16,6 +16,9 @@ struct ContentView: View {
     
     @State private var showMainResetConfirmation = false
     @State private var mainTempDate: Date = Date()
+    
+    @State private var showAbout = false
+    @State private var showTipJar = false
 
     var body: some View {
         ZStack(alignment: .topTrailing) {
@@ -37,9 +40,18 @@ struct ContentView: View {
                     .padding(.leading, 12)
 
                     Spacer()
-                    Image(systemName: "ellipsis.circle")
-                        .imageScale(.large)
-                        .padding(12)
+                    Menu {
+                        Button("About This App") {
+                            showAbout = true
+                        }
+                        Button("Developer Tip Jar") {
+                            showTipJar = true
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .imageScale(.large)
+                            .padding(12)
+                    }
                 }
                 .padding(.top, 0)
 
@@ -56,6 +68,12 @@ struct ContentView: View {
                         },
                         onResetRecord: {
                             viewModel.resetRecord(for: main.id)
+                        },
+                        onSetGoal: { goal in
+                            viewModel.updateGoal(for: main.id, to: goal)
+                        },
+                        onResetStreak: {
+                            viewModel.resetStartDate(for: main.id)
                         }
                     )
                     .onAppear {
@@ -81,17 +99,25 @@ struct ContentView: View {
                         .font(.headline)
                         .padding(.horizontal)
                     VStack(spacing: 12) {
-                        ForEach(viewModel.habits.filter { !$0.isMain }) { habit in
-                            HabitView(
-                                habit: habit,
-                                resetAction: { viewModel.resetStartDate(for: habit.id) },
-                                onDateChanged: { newDate in
-                                    viewModel.updateStartDate(for: habit.id, to: newDate)
-                                },
-                                onResetRecord: {
-                                    viewModel.resetRecord(for: habit.id)
-                                }
-                            )
+                        ForEach($viewModel.habits) { $habit in
+                            if !habit.isMain {
+                                HabitView(
+                                    habit: $habit,
+                                    resetAction: { viewModel.resetStartDate(for: habit.id) },
+                                    onDateChanged: { newDate in
+                                        viewModel.updateStartDate(for: habit.id, to: newDate)
+                                    },
+                                    onResetRecord: {
+                                        viewModel.resetRecord(for: habit.id)
+                                    },
+                                    onSetGoal: { goal in
+                                        viewModel.updateGoal(for: habit.id, to: goal)
+                                    },
+                                    onResetStreak: {
+                                        viewModel.resetStartDate(for: habit.id)
+                                    }
+                                )
+                            }
                         }
                     }
                     .padding(.bottom)
@@ -100,6 +126,12 @@ struct ContentView: View {
             }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
+        .sheet(isPresented: $showAbout) {
+            AboutAppView()
+        }
+        .sheet(isPresented: $showTipJar) {
+            TipJarView()
+        }
     }
 }
 

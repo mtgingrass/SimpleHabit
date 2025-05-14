@@ -47,6 +47,13 @@ class HabitListViewModel: ObservableObject {
             saveHabits()
         }
     }
+
+    func updateGoal(for id: UUID, to goal: Int?) {
+        if let index = habits.firstIndex(where: { $0.id == id }) {
+            habits[index].goalDays = goal
+            saveHabits()
+        }
+    }
     
     func resetRecord(for id: UUID) {
         if let index = habits.firstIndex(where: { $0.id == id }) {

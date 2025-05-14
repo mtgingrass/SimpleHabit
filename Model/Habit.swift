@@ -11,6 +11,7 @@ struct Habit: Identifiable, Codable {
     var id: UUID = UUID()
     var title: String
     var startDate: Date
+    var goalDays: Int? = nil
     
     var isMain: Bool = false
     var recordDays: Int = 1
@@ -27,5 +28,10 @@ struct Habit: Identifiable, Codable {
     var streakProgress: Double {
         guard recordDays > 0 else { return 0 }
         return min(Double(daysFree) / Double(recordDays), 1.0)
+    }
+    
+    var goalProgress: Double {
+        guard let goal = goalDays, goal > 0 else { return 0 }
+        return min(Double(daysFree) / Double(goal), 1.0)
     }
 }

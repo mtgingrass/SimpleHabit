@@ -8,21 +8,33 @@
 import SwiftUI
 
 struct HabitView: View {
-    var habit: Habit
+    @Binding var habit: Habit
     var resetAction: () -> Void
     var onDateChanged: (Date) -> Void
     var onResetRecord: () -> Void
+    var onSetGoal: (Int) -> Void
+    var onResetStreak: () -> Void
     @State private var showResetConfirmation = false
     @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
     @State private var tempStartDate: Date
+    @State private var showGoalSheet = false
 
-    init(habit: Habit, resetAction: @escaping () -> Void, onDateChanged: @escaping (Date) -> Void, onResetRecord: @escaping () -> Void) {
-        self.habit = habit
+    init(
+        habit: Binding<Habit>,
+        resetAction: @escaping () -> Void,
+        onDateChanged: @escaping (Date) -> Void,
+        onResetRecord: @escaping () -> Void,
+        onSetGoal: @escaping (Int) -> Void,
+        onResetStreak: @escaping () -> Void
+    ) {
+        self._habit = habit
         self.resetAction = resetAction
         self.onDateChanged = onDateChanged
         self.onResetRecord = onResetRecord
-        _tempStartDate = State(initialValue: habit.startDate)
+        self.onSetGoal = onSetGoal
+        self.onResetStreak = onResetStreak
+        _tempStartDate = State(initialValue: habit.wrappedValue.startDate)
     }
 
     var body: some View {
@@ -31,23 +43,6 @@ struct HabitView: View {
                 Text(habit.title)
                     .font(.headline)
                 Spacer()
-                Button(action: {
-                    showResetConfirmation = true
-                }) {
-                    Text("Reset to Day 1")
-                        .font(.caption)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(Color.red.opacity(0.8))
-                        .foregroundColor(.white)
-                        .cornerRadius(6)
-                }
-                .alert("Reset \(habit.title)?", isPresented: $showResetConfirmation) {
-                    Button("Reset", role: .destructive) {
-                        resetAction()
-                    }
-                    Button("Cancel", role: .cancel) { }
-                }
             }
 
             Text("🔥 Current Streak: \(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
@@ -55,29 +50,26 @@ struct HabitView: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.orange)
 
+            if let goal = habit.goalDays {
+                Text("🎯 Goal: \(goal) day\(goal == 1 ? "" : "s")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+
             HStack {
-                ProgressView(value: habit.streakProgress)
+                ProgressView(value: habit.goalProgress)
                     .progressViewStyle(.linear)
                     .tint(.green)
                     .scaleEffect(y: 0.6, anchor: .center)
 
                 Spacer()
 
-                Menu {
-                    Button(role: .destructive) {
-                        showResetRecordConfirmation = true
-                    } label: {
-                        Label("⚠️ Reset Record", systemImage: "exclamationmark.triangle")
-                    }
-                    Button("Set Date Manually") {
-                        isEditingDate = true
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title3)
-                        .padding(.horizontal, 8)
-                        .foregroundColor(.primary)
-                }
+                EllipsisMenu(
+                    onSetDate: { isEditingDate = true },
+                    onSetGoal: { showGoalSheet = true },
+                    onResetStreak: onResetStreak,
+                    onResetRecord: { showResetRecordConfirmation = true }
+                )
                 .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
                     Button("Reset", role: .destructive) {
                         onResetRecord()
@@ -112,15 +104,22 @@ struct HabitView: View {
         .background(Color(uiColor: UIColor.secondarySystemBackground))
         .cornerRadius(12)
         .padding(.horizontal)
+        .sheet(isPresented: $showGoalSheet) {
+            SetGoalView { goal in
+                onSetGoal(goal)
+            }
+        }
     }
 }
 
 
 #Preview {
     HabitView(
-        habit: Habit(id: UUID(), title: "Test Habit", startDate: Date(), isMain: false, recordDays: 5),
+        habit: .constant(Habit(id: UUID(), title: "Test Habit", startDate: Date(), isMain: false, recordDays: 5)),
         resetAction: {},
         onDateChanged: { _ in },
-        onResetRecord: {}
+        onResetRecord: {},
+        onSetGoal: { _ in },
+        onResetStreak: {}
     )
 }

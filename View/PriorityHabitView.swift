@@ -6,10 +6,13 @@ struct PriorityHabitView: View {
     var onDateChanged: (Date) -> Void
     var onReset: () -> Void
     var onResetRecord: () -> Void
+    var onSetGoal: (Int) -> Void
+    var onResetStreak: () -> Void
     @State private var showResetConfirmation = false
     @State private var showTipJar = false
     @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
+    @State private var showGoalSheet = false
 
     var body: some View {
         VStack(spacing: 4) {
@@ -18,32 +21,28 @@ struct PriorityHabitView: View {
                 .foregroundColor(.secondary)
             Text("Day \(habit.daysFree)")
                 .font(.system(size: 52, weight: .bold))
+            if let goal = habit.goalDays {
+                Text("of \(goal) days")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
             Text("🏆 \(habit.recordDisplayText)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
-            ProgressView(value: habit.streakProgress)
+            ProgressView(value: habit.goalProgress, total: 1)
                 .progressViewStyle(.linear)
                 .tint(.green)
                 .padding(.top, 4)
 
             HStack {
                 Spacer()
-                Menu {
-                    Button("Set Date Manually") {
-                        isEditingDate = true
-                    }
-                    Button(role: .destructive) {
-                        showResetRecordConfirmation = true
-                    } label: {
-                        Label("⚠️ Reset Record", systemImage: "exclamationmark.triangle")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title3)
-                        .padding(.horizontal, 8)
-                        .foregroundColor(.primary)
-                }
+                EllipsisMenu(
+                    onSetDate: { isEditingDate = true },
+                    onSetGoal: { showGoalSheet = true },
+                    onResetStreak: { showResetConfirmation = true },
+                    onResetRecord: { showResetRecordConfirmation = true }
+                )
             }
             if isEditingDate {
                 DatePicker(
@@ -72,24 +71,6 @@ struct PriorityHabitView: View {
                 }
 
                 Spacer()
-
-                Button(action: {
-                    showResetConfirmation = true
-                }) {
-                    Text("Reset to Day 1")
-                        .font(.caption)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 6)
-                        .background(Color.red.opacity(0.8))
-                        .foregroundColor(.white)
-                        .cornerRadius(6)
-                }
-                .alert("Reset \(habit.title)?", isPresented: $showResetConfirmation) {
-                    Button("Reset", role: .destructive) {
-                        onReset()
-                    }
-                    Button("Cancel", role: .cancel) { }
-                }
             }
         }
         .padding()
@@ -111,6 +92,11 @@ struct PriorityHabitView: View {
         } message: {
             Text("This will reset your record to your current streak of \(habit.daysFree) day\(habit.daysFree == 1 ? "" : "s").")
         }
+        .sheet(isPresented: $showGoalSheet) {
+            SetGoalView { goal in
+                onSetGoal(goal)
+            }
+        }
     }
 }
 
@@ -120,6 +106,8 @@ struct PriorityHabitView: View {
         tempDate: Date(),
         onDateChanged: { _ in },
         onReset: {},
-        onResetRecord: {}
+        onResetRecord: {},
+        onSetGoal: { _ in },
+        onResetStreak: {}
     )
 }
