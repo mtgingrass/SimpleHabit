@@ -53,6 +53,9 @@ struct ContentView: View {
                         },
                         onReset: {
                             showMainResetConfirmation = true
+                        },
+                        onResetRecord: {
+                            viewModel.resetRecord(for: main.id)
                         }
                     )
                     .onAppear {

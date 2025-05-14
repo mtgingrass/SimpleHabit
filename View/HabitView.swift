@@ -64,13 +64,13 @@ struct HabitView: View {
                 Spacer()
 
                 Menu {
-                    Button("Set Date Manually") {
-                        isEditingDate = true
-                    }
                     Button(role: .destructive) {
                         showResetRecordConfirmation = true
                     } label: {
                         Label("⚠️ Reset Record", systemImage: "exclamationmark.triangle")
+                    }
+                    Button("Set Date Manually") {
+                        isEditingDate = true
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -83,6 +83,8 @@ struct HabitView: View {
                         onResetRecord()
                     }
                     Button("Cancel", role: .cancel) { }
+                } message: {
+                    Text("This will reset your record to your current streak of \(habit.daysFree) day\(habit.daysFree == 1 ? "" : "s").")
                 }
             }
             if isEditingDate {

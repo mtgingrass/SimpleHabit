@@ -50,7 +50,7 @@ class HabitListViewModel: ObservableObject {
     
     func resetRecord(for id: UUID) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
-            habits[index].recordDays = 1
+            habits[index].recordDays = max(habits[index].daysFree, 1)
             saveHabits()
         }
     }
