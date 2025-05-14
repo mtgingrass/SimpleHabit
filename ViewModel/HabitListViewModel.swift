@@ -62,6 +62,13 @@ class HabitListViewModel: ObservableObject {
         }
     }
 
+    func updateTitle(for id: UUID, to newTitle: String) {
+        if let index = habits.firstIndex(where: { $0.id == id }) {
+            habits[index].title = newTitle
+            saveHabits()
+        }
+    }
+
     private func saveHabits() {
         if let data = try? JSONEncoder().encode(habits) {
             UserDefaults.standard.set(data, forKey: habitsKey)

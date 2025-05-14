@@ -74,6 +74,9 @@ struct ContentView: View {
                         },
                         onResetStreak: {
                             viewModel.resetStartDate(for: main.id)
+                        },
+                        onTitleChanged: { newTitle in
+                            viewModel.updateTitle(for: main.id, to: newTitle)
                         }
                     )
                     .onAppear {
@@ -115,6 +118,9 @@ struct ContentView: View {
                                     },
                                     onResetStreak: {
                                         viewModel.resetStartDate(for: habit.id)
+                                    },
+                                    onTitleChanged: { newTitle in
+                                        viewModel.updateTitle(for: habit.id, to: newTitle)
                                     }
                                 )
                             }

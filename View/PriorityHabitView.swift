@@ -1,6 +1,18 @@
 import SwiftUI
 
 struct PriorityHabitView: View {
+    // Sheet enum for clarity
+    private enum ActiveSheet: Identifiable {
+        case rename, setGoal, options, tipJar
+        var id: Int {
+            switch self {
+            case .rename: return 0
+            case .setGoal: return 1
+            case .options: return 2
+            case .tipJar: return 3
+            }
+        }
+    }
     var habit: Habit
     var tempDate: Date
     var onDateChanged: (Date) -> Void
@@ -8,17 +20,38 @@ struct PriorityHabitView: View {
     var onResetRecord: () -> Void
     var onSetGoal: (Int) -> Void
     var onResetStreak: () -> Void
+    var onTitleChanged: (String) -> Void
     @State private var showResetConfirmation = false
-    @State private var showTipJar = false
     @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
-    @State private var showGoalSheet = false
+    @State private var habitTitle: String
+    @State private var activeSheet: ActiveSheet?
+
+    init(
+        habit: Habit,
+        tempDate: Date,
+        onDateChanged: @escaping (Date) -> Void,
+        onReset: @escaping () -> Void,
+        onResetRecord: @escaping () -> Void,
+        onSetGoal: @escaping (Int) -> Void,
+        onResetStreak: @escaping () -> Void,
+        onTitleChanged: @escaping (String) -> Void
+    ) {
+        self.habit = habit
+        self.tempDate = tempDate
+        self.onDateChanged = onDateChanged
+        self.onReset = onReset
+        self.onResetRecord = onResetRecord
+        self.onSetGoal = onSetGoal
+        self.onResetStreak = onResetStreak
+        self.onTitleChanged = onTitleChanged
+        _habitTitle = State(initialValue: habit.title)
+    }
 
     var body: some View {
         VStack(spacing: 4) {
             Text(habit.title)
                 .font(.headline)
-                .foregroundColor(.secondary)
             Text("Day \(habit.daysFree)")
                 .font(.system(size: 52, weight: .bold))
             if let goal = habit.goalDays {
@@ -37,12 +70,14 @@ struct PriorityHabitView: View {
 
             HStack {
                 Spacer()
-                EllipsisMenu(
-                    onSetDate: { isEditingDate = true },
-                    onSetGoal: { showGoalSheet = true },
-                    onResetStreak: { showResetConfirmation = true },
-                    onResetRecord: { showResetRecordConfirmation = true }
-                )
+                Button(action: {
+                    activeSheet = .options
+                }) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 8)
+                }
             }
             if isEditingDate {
                 DatePicker(
@@ -63,13 +98,12 @@ struct PriorityHabitView: View {
 
             HStack {
                 Button(action: {
-                    showTipJar = true
+                    activeSheet = .tipJar
                 }) {
                     Label("Tip Jar", systemImage: "heart.fill")
                         .font(.caption)
                         .foregroundColor(.pink)
                 }
-
                 Spacer()
             }
         }
@@ -81,8 +115,27 @@ struct PriorityHabitView: View {
         )
         .padding(.horizontal)
         .padding(.top, -8)
-        .sheet(isPresented: $showTipJar) {
-            TipJarView()
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .rename:
+                RenameHabitView(currentTitle: habitTitle) { newTitle in
+                    habitTitle = newTitle
+                    onTitleChanged(newTitle)
+                }
+            case .setGoal:
+                SetGoalView { goal in
+                    onSetGoal(goal)
+                }
+            case .options:
+                HabitOptionsView(
+                    onRename: { activeSheet = .rename },
+                    onSetGoal: { activeSheet = .setGoal },
+                    onResetStreak: { showResetConfirmation = true },
+                    onResetRecord: { showResetRecordConfirmation = true }
+                )
+            case .tipJar:
+                TipJarView()
+            }
         }
         .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
             Button("Reset", role: .destructive) {
@@ -92,10 +145,13 @@ struct PriorityHabitView: View {
         } message: {
             Text("This will reset your record to your current streak of \(habit.daysFree) day\(habit.daysFree == 1 ? "" : "s").")
         }
-        .sheet(isPresented: $showGoalSheet) {
-            SetGoalView { goal in
-                onSetGoal(goal)
+        .alert("Reset streak for \(habit.title)?", isPresented: $showResetConfirmation) {
+            Button("Reset", role: .destructive) {
+                onResetStreak()
             }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This will reset your current streak to Day 1.")
         }
     }
 }
@@ -108,6 +164,7 @@ struct PriorityHabitView: View {
         onReset: {},
         onResetRecord: {},
         onSetGoal: { _ in },
-        onResetStreak: {}
+        onResetStreak: {},
+        onTitleChanged: { _ in }
     )
 }

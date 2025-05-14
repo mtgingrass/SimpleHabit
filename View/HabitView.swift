@@ -8,6 +8,17 @@
 import SwiftUI
 
 struct HabitView: View {
+    // MARK: - Sheet management
+    private enum ActiveSheet: Identifiable {
+        case rename, setGoal, options
+        var id: Int {
+            switch self {
+            case .rename: return 0
+            case .setGoal: return 1
+            case .options: return 2
+            }
+        }
+    }
     @Binding var habit: Habit
     var resetAction: () -> Void
     var onDateChanged: (Date) -> Void
@@ -18,7 +29,9 @@ struct HabitView: View {
     @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
     @State private var tempStartDate: Date
-    @State private var showGoalSheet = false
+    @State private var habitTitle: String
+    @State private var activeSheet: ActiveSheet?
+    var onTitleChanged: (String) -> Void
 
     init(
         habit: Binding<Habit>,
@@ -26,7 +39,8 @@ struct HabitView: View {
         onDateChanged: @escaping (Date) -> Void,
         onResetRecord: @escaping () -> Void,
         onSetGoal: @escaping (Int) -> Void,
-        onResetStreak: @escaping () -> Void
+        onResetStreak: @escaping () -> Void,
+        onTitleChanged: @escaping (String) -> Void
     ) {
         self._habit = habit
         self.resetAction = resetAction
@@ -34,7 +48,9 @@ struct HabitView: View {
         self.onResetRecord = onResetRecord
         self.onSetGoal = onSetGoal
         self.onResetStreak = onResetStreak
+        self.onTitleChanged = onTitleChanged
         _tempStartDate = State(initialValue: habit.wrappedValue.startDate)
+        _habitTitle = State(initialValue: habit.wrappedValue.title)
     }
 
     var body: some View {
@@ -64,19 +80,13 @@ struct HabitView: View {
 
                 Spacer()
 
-                EllipsisMenu(
-                    onSetDate: { isEditingDate = true },
-                    onSetGoal: { showGoalSheet = true },
-                    onResetStreak: onResetStreak,
-                    onResetRecord: { showResetRecordConfirmation = true }
-                )
-                .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
-                    Button("Reset", role: .destructive) {
-                        onResetRecord()
-                    }
-                    Button("Cancel", role: .cancel) { }
-                } message: {
-                    Text("This will reset your record to your current streak of \(habit.daysFree) day\(habit.daysFree == 1 ? "" : "s").")
+                Button(action: {
+                    activeSheet = .options
+                }) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 8)
                 }
             }
             if isEditingDate {
@@ -104,10 +114,41 @@ struct HabitView: View {
         .background(Color(uiColor: UIColor.secondarySystemBackground))
         .cornerRadius(12)
         .padding(.horizontal)
-        .sheet(isPresented: $showGoalSheet) {
-            SetGoalView { goal in
-                onSetGoal(goal)
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .options:
+                HabitOptionsView(
+                    onRename: { activeSheet = .rename },
+                    onSetGoal: { activeSheet = .setGoal },
+                    onResetStreak: { showResetConfirmation = true },
+                    onResetRecord: { showResetRecordConfirmation = true }
+                )
+            case .rename:
+                RenameHabitView(currentTitle: habitTitle) { newTitle in
+                    habitTitle = newTitle
+                    onTitleChanged(newTitle)
+                }
+            case .setGoal:
+                SetGoalView { goal in
+                    onSetGoal(goal)
+                }
             }
+        }
+        .alert("Reset streak for \(habit.title)?", isPresented: $showResetConfirmation) {
+            Button("Reset", role: .destructive) {
+                onResetStreak()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This will reset your current streak to Day 1.")
+        }
+        .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
+            Button("Reset", role: .destructive) {
+                onResetRecord()
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("This will permanently reset your highest streak record.")
         }
     }
 }
@@ -120,6 +161,7 @@ struct HabitView: View {
         onDateChanged: { _ in },
         onResetRecord: {},
         onSetGoal: { _ in },
-        onResetStreak: {}
+        onResetStreak: {},
+        onTitleChanged: { _ in }
     )
 }
