@@ -26,27 +26,15 @@ struct HabitView: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: 4) {
             HStack {
-                VStack(alignment: .leading) {
-                    Text(habit.title)
-                        .font(.headline)
-                    Text("Current Streak: \(habit.daysFree) days")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-
-                    Text("🏆 \(habit.recordDisplayText)")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.yellow)
-                }
-
+                Text(habit.title)
+                    .font(.headline)
                 Spacer()
-
                 Button(action: {
                     showResetConfirmation = true
                 }) {
-                    Text("Reset")
+                    Text("Reset Current Streak")
                         .font(.caption)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
@@ -61,7 +49,24 @@ struct HabitView: View {
                     Button("Cancel", role: .cancel) { }
                 }
             }
+
+            Text("Current Streak: \(habit.daysFree) days")
+                .font(.caption)
+                .foregroundColor(.secondary)
+
+            Text("🏆 \(habit.recordDisplayText)")
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundColor(.yellow)
+
             HStack {
+                ProgressView(value: habit.streakProgress)
+                    .progressViewStyle(.linear)
+                    .tint(.green)
+                    .scaleEffect(y: 0.6, anchor: .center)
+
+                Spacer()
+
                 DatePicker(
                     "",
                     selection: $tempStartDate,
@@ -77,8 +82,6 @@ struct HabitView: View {
                 .padding(.vertical, 6)
                 .background(Color(uiColor: UIColor.secondarySystemBackground))
                 .cornerRadius(6)
-
-                Spacer()
             }
         }
         .padding()

@@ -13,23 +13,17 @@ struct PriorityHabitView: View {
             Text(habit.title)
                 .font(.headline)
                 .foregroundColor(.secondary)
-            Text("\(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
+            Text("Day \(habit.daysFree)")
                 .font(.system(size: 52, weight: .bold))
             Text("🏆 \(habit.recordDisplayText)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
-        }
-        .padding()
-        .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(uiColor: UIColor.secondarySystemBackground))
-        )
-        .padding(.horizontal)
-        .padding(.top, -8)
+            ProgressView(value: habit.streakProgress)
+                .progressViewStyle(.linear)
+                .tint(.green)
+                .padding(.top, 4)
 
-        VStack(spacing: 16) {
             HStack {
                 Spacer()
                 DatePicker(
@@ -73,6 +67,13 @@ struct PriorityHabitView: View {
             }
         }
         .padding()
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(uiColor: UIColor.secondarySystemBackground))
+        )
+        .padding(.horizontal)
+        .padding(.top, -8)
     }
 }
 

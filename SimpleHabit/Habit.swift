@@ -24,4 +24,8 @@ struct Habit: Identifiable, Codable {
     var recordDisplayText: String {
         "Record: \(recordDays) day" + (recordDays == 1 ? "" : "s")
     }
+    var streakProgress: Double {
+        guard recordDays > 0 else { return 0 }
+        return min(Double(daysFree) / Double(recordDays), 1.0)
+    }
 }

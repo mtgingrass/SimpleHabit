@@ -66,7 +66,11 @@ struct ContentView: View {
                     }
                 }
 
-                Divider().padding(.vertical, 12)
+                Divider()
+                    .frame(height: 2)
+                    .background(Color.secondary)
+                    .padding(.vertical, 16)
+                    .padding(.horizontal)
 
                 // Sub-Habit Section
                 VStack(alignment: .leading, spacing: 8) {
