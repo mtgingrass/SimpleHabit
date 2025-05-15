@@ -49,35 +49,68 @@ struct HabitView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
-                Text(habit.title)
-                    .font(.headline)
+                Text(habit.title.uppercased())
+                    .font(.system(.caption, design: .rounded))
+                    .fontWeight(.bold)
+                    .kerning(1.0)
+                    .foregroundColor(.accentColor)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 4)
+                    .background(Color.accentColor.opacity(0.1))
+                    .clipShape(Capsule())
                 Spacer()
             }
 
-            Text("🔥 Streak: \(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.orange)
+            HStack(alignment: .center) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Image(systemName: "flame.fill")
+                        .foregroundColor(.orange)
+                        .imageScale(.medium)
+                    Text("\(habit.daysFree)")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(.orange)
+                }
 
-            if let goal = habit.goalDays {
-                Text("🎯 Goal: \(goal) day\(goal == 1 ? "" : "s")")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                VStack(spacing: 4) {
+                    Image(systemName: "trophy.fill")
+                        .foregroundColor(.yellow)
+                        .imageScale(.medium)
+                    Text("\(habit.recordDays)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                }
+                .frame(maxWidth: .infinity)
+
+                if habit.goalDays != nil {
+                    VStack(spacing: 2) {
+                        ZStack {
+                            Circle()
+                                .stroke(Color.green.opacity(0.2), lineWidth: 6)
+                                .frame(width: 50, height: 50)
+                            Circle()
+                                .trim(from: 0.0, to: habit.goalProgress)
+                                .stroke(Color.green, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                                .frame(width: 50, height: 50)
+                            VStack(spacing: 2) {
+                                Text("\(Int(habit.goalProgress * 100))%")
+                                    .font(.caption2)
+                                    .bold()
+                                    .foregroundColor(.green)
+                                
+                                if let goal = habit.goalDays {
+                                    Text("\(goal)")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
+                        .frame(width: 50)
+                    }
+                }
             }
-
-            HStack {
-                ProgressView(value: habit.goalProgress)
-                    .progressViewStyle(.linear)
-                    .tint(.green)
-                    .scaleEffect(y: 0.6, anchor: .center)
-
-                Spacer()
-            }
-
-            Text("🏆\(habit.recordDisplayText)")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.yellow)
         }
         .onTapGesture {
             activeSheet = .options
@@ -134,13 +167,37 @@ struct HabitView: View {
 
 
 #Preview {
-    HabitView(
-        habit: .constant(Habit(id: UUID(), title: "Test Habit", startDate: Date(), isMain: false, recordDays: 5)),
-        resetAction: {},
-        onDateChanged: { _ in },
-        onResetRecord: {},
-        onSetGoal: { _ in },
-        onResetStreak: {},
-        onTitleChanged: { _ in }
-    )
+    VStack(spacing: 12) {
+        HabitView(
+            habit: .constant(Habit(id: UUID(), title: "Workout", startDate: Date().addingTimeInterval(-86400 * 3), goalDays: 10, isMain: false, recordDays: 6)),
+            resetAction: {},
+            onDateChanged: { _ in },
+            onResetRecord: {},
+            onSetGoal: { _ in },
+            onResetStreak: {},
+            onTitleChanged: { _ in }
+        )
+
+        HabitView(
+            habit: .constant(Habit(id: UUID(), title: "Reading", startDate: Date().addingTimeInterval(-86400 * 1), goalDays: 5, isMain: false, recordDays: 3)),
+            resetAction: {},
+            onDateChanged: { _ in },
+            onResetRecord: {},
+            onSetGoal: { _ in },
+            onResetStreak: {},
+            onTitleChanged: { _ in }
+        )
+
+        HabitView(
+            habit: .constant(Habit(id: UUID(), title: "Journaling", startDate: Date().addingTimeInterval(-86400 * 2), goalDays: 7, isMain: false, recordDays: 4)),
+            resetAction: {},
+            onDateChanged: { _ in },
+            onResetRecord: {},
+            onSetGoal: { _ in },
+            onResetStreak: {},
+            onTitleChanged: { _ in }
+        )
+    }
+    .padding()
+    .background(Color(.systemBackground))
 }

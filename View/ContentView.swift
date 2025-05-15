@@ -115,29 +115,31 @@ struct ContentView: View {
 
                 // Sub-Habit Section
                 VStack(alignment: .leading, spacing: 8) {
+                    Text("Subhabit count: \(viewModel.habits.filter { !$0.isMain }.count)")
+                        .foregroundColor(.gray)
+                        .font(.caption)
+                        .padding(.leading)
                     List {
-                        ForEach($viewModel.habits) { $habit in
-                            if !habit.isMain {
-                                HabitView(
-                                    habit: $habit,
-                                    resetAction: { viewModel.resetStartDate(for: habit.id) },
-                                    onDateChanged: { newDate in
-                                        viewModel.updateStartDate(for: habit.id, to: newDate)
-                                    },
-                                    onResetRecord: {
-                                        viewModel.resetRecord(for: habit.id)
-                                    },
-                                    onSetGoal: { goal in
-                                        viewModel.updateGoal(for: habit.id, to: goal)
-                                    },
-                                    onResetStreak: {
-                                        viewModel.resetStartDate(for: habit.id)
-                                    },
-                                    onTitleChanged: { newTitle in
-                                        viewModel.updateTitle(for: habit.id, to: newTitle)
-                                    }
-                                )
-                            }
+                        ForEach(Array(zip(viewModel.habits.indices, $viewModel.habits)).filter { !$0.1.wrappedValue.isMain }, id: \.0) { index, habitBinding in
+                            HabitView(
+                                habit: habitBinding,
+                                resetAction: { viewModel.resetStartDate(for: habitBinding.wrappedValue.id) },
+                                onDateChanged: { newDate in
+                                    viewModel.updateStartDate(for: habitBinding.wrappedValue.id, to: newDate)
+                                },
+                                onResetRecord: {
+                                    viewModel.resetRecord(for: habitBinding.wrappedValue.id)
+                                },
+                                onSetGoal: { goal in
+                                    viewModel.updateGoal(for: habitBinding.wrappedValue.id, to: goal)
+                                },
+                                onResetStreak: {
+                                    viewModel.resetStartDate(for: habitBinding.wrappedValue.id)
+                                },
+                                onTitleChanged: { newTitle in
+                                    viewModel.updateTitle(for: habitBinding.wrappedValue.id, to: newTitle)
+                                }
+                            )
                         }
                     }
                     .listStyle(.plain)

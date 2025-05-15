@@ -16,6 +16,8 @@ class HabitListViewModel: ObservableObject {
     }
     
     init() {
+        // Temporarily clear stored habits to force default list on next launch
+        //UserDefaults.standard.removeObject(forKey: habitsKey)
         habits = loadHabits()
     }
 
@@ -83,7 +85,8 @@ class HabitListViewModel: ObservableObject {
         return [
             Habit(id: UUID(), title: "Days Free", startDate: Date(), isMain: true),
             Habit(id: UUID(), title: "Workout", startDate: Date()),
-            Habit(id: UUID(), title: "Reading", startDate: Date())
+            Habit(id: UUID(), title: "Reading", startDate: Date()),
+            Habit(id: UUID(), title: "Test", startDate: Date())
         ]
     }
 }
