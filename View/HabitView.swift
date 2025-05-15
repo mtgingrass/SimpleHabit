@@ -1,10 +1,3 @@
-//
-//  HabitView.swift
-//  SimpleHabit
-//
-//  Created by Mark Gingrass on 5/13/25.
-//
-
 import SwiftUI
 
 struct HabitView: View {
@@ -79,21 +72,15 @@ struct HabitView: View {
                     .scaleEffect(y: 0.6, anchor: .center)
 
                 Spacer()
-
-                Button(action: {
-                    activeSheet = .options
-                }) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.title3)
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 8)
-                }
             }
 
             Text("🏆\(habit.recordDisplayText)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
+        }
+        .onTapGesture {
+            activeSheet = .options
         }
         .padding()
         .frame(maxWidth: .infinity)

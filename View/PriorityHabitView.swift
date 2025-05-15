@@ -53,7 +53,7 @@ struct PriorityHabitView: View {
     }
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topTrailing) {
             RoundedRectangle(cornerRadius: 20)
                 .fill(
                     LinearGradient(
@@ -68,74 +68,64 @@ struct PriorityHabitView: View {
                 )
                 .shadow(color: .green.opacity(0.25), radius: 8, x: 0, y: 4)
             VStack {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        activeSheet = .tipJar
-                    }) {
-                        Image(systemName: "heart.fill")
-                            .foregroundColor(.pink)
-                            .padding(8)
-                            .background(Color.white.opacity(0.6))
-                            .clipShape(Circle())
-                    }
-                    .padding(10)
-                }
-                Spacer()
-            }
-            VStack(spacing: 4) {
-            Text("🔥 \(habit.title)")
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundColor(.green)
-            Text("Day \(habit.daysFree)")
-                .font(.system(size: 52, weight: .bold))
-            if let goal = habit.goalDays {
-                Text("of \(goal) days")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            Text("🏆\(habit.recordDisplayText)")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.yellow)
-            if let goal = habit.goalDays {
-                ZStack {
-                    Circle()
-                        .stroke(Color.green.opacity(0.2), lineWidth: 10)
-                        .frame(width: 100, height: 100)
-                    Circle()
-                        .trim(from: 0.0, to: habit.goalProgress)
-                        .stroke(Color.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .frame(width: 100, height: 100)
-                    Text("\(Int(habit.goalProgress * 100))%")
-                        .font(.caption)
-                        .bold()
-                        .foregroundColor(.green)
-                }
-                .padding(.top, 8)
-            } else {
-                Text("No goal set")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.top, 8)
-            }
-
-            HStack {
                 Spacer()
                 Button(action: {
-                    activeSheet = .options
+                    activeSheet = .tipJar
                 }) {
-                    Image(systemName: "slider.horizontal.3")
-                        .font(.title3)
-                        .foregroundColor(.primary)
-                        .padding(.horizontal, 8)
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.pink)
+                        .padding(8)
+                        .background(Color.white.opacity(0.6))
+                        .clipShape(Circle())
                 }
+                .padding(10)
             }
+            ZStack {
+                VStack(spacing: 4) {
+                    Text("🔥 \(habit.title)")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                    Text("Day \(habit.daysFree)")
+                        .font(.system(size: 52, weight: .bold))
+                    if let goal = habit.goalDays {
+                        Text("of \(goal) days")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Text("🏆\(habit.recordDisplayText)")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.yellow)
+                    if habit.goalDays != nil {
+                        ZStack {
+                            Circle()
+                                .stroke(Color.green.opacity(0.2), lineWidth: 10)
+                                .frame(width: 100, height: 100)
+                            Circle()
+                                .trim(from: 0.0, to: habit.goalProgress)
+                                .stroke(Color.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                                .rotationEffect(.degrees(-90))
+                                .frame(width: 100, height: 100)
+                            Text("\(Int(habit.goalProgress * 100))%")
+                                .font(.caption)
+                                .bold()
+                                .foregroundColor(.green)
+                        }
+                        .padding(.top, 8)
+                    } else {
+                        Text("No goal set")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .padding(.top, 8)
+                    }
+                }
+                .onTapGesture {
+                    activeSheet = .options
+                }
+                .padding(.horizontal, 8)
             }
-            .padding(.horizontal, 8)
-            .padding(.top, 4)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding()
         .frame(maxWidth: .infinity)

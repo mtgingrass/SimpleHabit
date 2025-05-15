@@ -24,8 +24,8 @@ struct ContentView: View {
         ZStack(alignment: .topTrailing) {
             Color(.systemBackground)
                 .ignoresSafeArea()
-            ScrollView {
-                VStack(spacing: 0) {
+            
+            VStack(spacing: 0) {
                 // Top-right toggle and ellipsis icon
                 HStack {
                     HStack(spacing: 6) {
@@ -105,7 +105,7 @@ struct ContentView: View {
                     Text("Sub-Habits")
                         .font(.headline)
                         .padding(.horizontal)
-                    VStack(spacing: 12) {
+                    List {
                         ForEach($viewModel.habits) { $habit in
                             if !habit.isMain {
                                 HabitView(
@@ -130,11 +130,11 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .padding(.bottom)
+                    .listStyle(.plain)
+                    .frame(maxHeight: .infinity)
                 }
                 Spacer(minLength: 0)
             }
-        }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .sheet(isPresented: $showAbout) {
