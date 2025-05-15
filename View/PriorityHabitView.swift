@@ -99,10 +99,28 @@ struct PriorityHabitView: View {
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
-            ProgressView(value: habit.goalProgress, total: 1)
-                .progressViewStyle(.linear)
-                .tint(.green)
-                .padding(.top, 4)
+            if let goal = habit.goalDays {
+                ZStack {
+                    Circle()
+                        .stroke(Color.green.opacity(0.2), lineWidth: 10)
+                        .frame(width: 100, height: 100)
+                    Circle()
+                        .trim(from: 0.0, to: habit.goalProgress)
+                        .stroke(Color.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: 100, height: 100)
+                    Text("\(Int(habit.goalProgress * 100))%")
+                        .font(.caption)
+                        .bold()
+                        .foregroundColor(.green)
+                }
+                .padding(.top, 8)
+            } else {
+                Text("No goal set")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 8)
+            }
 
             HStack {
                 Spacer()
