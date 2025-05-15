@@ -74,63 +74,65 @@ struct PriorityHabitView: View {
                 }) {
                     Image(systemName: "heart.fill")
                         .foregroundColor(.pink)
-                        .padding(8)
+                        .padding(2)
                         .background(Color.white.opacity(0.6))
                         .clipShape(Circle())
                 }
                 .padding(10)
             }
             ZStack {
-                VStack(spacing: 4) {
-                    Text("🔥 \(habit.title)")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.green)
-                    Text("Day \(habit.daysFree)")
-                        .font(.system(size: 52, weight: .bold))
-                    if let goal = habit.goalDays {
-                        Text("of \(goal) days")
+                HStack(alignment: .center, spacing: 8) {
+                    VStack(alignment: .center, spacing: 0) {
+                        Text("🔥 \(habit.title)")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.green)
+                        Text("Day \(habit.daysFree)")
+                            .font(.system(size: 52, weight: .bold))
+                        if let goal = habit.goalDays {
+                            Text("of \(goal) days")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Text("🏆\(habit.recordDisplayText)")
                             .font(.subheadline)
-                            .foregroundColor(.secondary)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.yellow)
                     }
-                    Text("🏆\(habit.recordDisplayText)")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.yellow)
+
+                    Spacer(minLength: 8)
+
                     if habit.goalDays != nil {
                         ZStack {
                             Circle()
                                 .stroke(Color.green.opacity(0.2), lineWidth: 10)
-                                .frame(width: 100, height: 100)
+                                .frame(width: 90, height: 90)
                             Circle()
                                 .trim(from: 0.0, to: habit.goalProgress)
                                 .stroke(Color.green, style: StrokeStyle(lineWidth: 10, lineCap: .round))
                                 .rotationEffect(.degrees(-90))
-                                .frame(width: 100, height: 100)
+                                .frame(width: 90, height: 90)
                             Text("\(Int(habit.goalProgress * 100))%")
                                 .font(.caption)
                                 .bold()
                                 .foregroundColor(.green)
                         }
-                        .padding(.top, 8)
                     } else {
                         Text("No goal set")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
-                            .padding(.top, 8)
                     }
                 }
                 .onTapGesture {
                     activeSheet = .options
                 }
-                .padding(.horizontal, 8)
+                .padding(.horizontal, 16)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding()
-        .frame(maxWidth: .infinity)
+        .frame(height: 150)
         .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.vertical, 4)
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .rename:
@@ -179,7 +181,14 @@ struct PriorityHabitView: View {
 
 #Preview {
     PriorityHabitView(
-        habit: Habit(id: UUID(), title: "Priority Habit", startDate: Date(), isMain: true, recordDays: 5),
+        habit: Habit(
+            id: UUID(),
+            title: "Priority Habit",
+            startDate: Calendar.current.date(byAdding: .day, value: -5, to: Date())!,
+            goalDays: 10,
+            isMain: true,
+            recordDays: 7
+        ),
         tempDate: Date(),
         onDateChanged: { _ in },
         onReset: {},

@@ -26,7 +26,7 @@ struct ContentView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-                // Top-right toggle and ellipsis icon
+                // Top-right toggle and controls
                 HStack {
                     HStack(spacing: 6) {
                         Toggle("", isOn: $isDarkMode)
@@ -41,18 +41,24 @@ struct ContentView: View {
                     .padding(.leading, 12)
 
                     Spacer()
-                    Menu {
-                        Button("About This App") {
-                            showAbout = true
-                        }
-                        Button("Developer Tip Jar") {
+                    HStack(spacing: 12) {
+                        Button(action: {
                             showTipJar = true
+                        }) {
+                            Image(systemName: "gift.circle")
+                                .imageScale(.large)
                         }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                            .imageScale(.large)
-                            .padding(12)
+                        Menu {
+                            Button("About This App") {
+                                showAbout = true
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .imageScale(.large)
+                                .padding(12)
+                        }
                     }
+                    .padding(.trailing, 12)
                 }
                 .padding(.top, 0)
 
@@ -92,6 +98,13 @@ struct ContentView: View {
                         }
                         Button("Cancel", role: .cancel) { }
                     }
+                    
+                    Text("Because you stopped the habit above, you're making space for the habits below.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                        .padding(.top, 8)
                 }
 
                 Divider()
@@ -102,9 +115,6 @@ struct ContentView: View {
 
                 // Sub-Habit Section
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Sub-Habits")
-                        .font(.headline)
-                        .padding(.horizontal)
                     List {
                         ForEach($viewModel.habits) { $habit in
                             if !habit.isMain {
