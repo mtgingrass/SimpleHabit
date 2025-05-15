@@ -32,6 +32,11 @@ struct Habit: Identifiable, Codable {
     
     var goalProgress: Double {
         guard let goal = goalDays, goal > 0 else { return 0 }
-        return min(Double(daysFree) / Double(goal), 1.0)
+
+        if goal == 1 {
+            return daysFree >= 2 ? 1.0 : 0.0
+        } else {
+            return min(1.0, Double(daysFree) / Double(goal))
+        }
     }
 }

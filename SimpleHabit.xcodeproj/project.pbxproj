@@ -18,6 +18,7 @@
 		1EB545C22DD4CEB90070B0A0 /* AboutAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */; };
 		1EB545CE2DD53E5E0070B0A0 /* RenameHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545CD2DD53E5E0070B0A0 /* RenameHabitView.swift */; };
 		1EB545D02DD541490070B0A0 /* HabitOptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545CF2DD541490070B0A0 /* HabitOptionsView.swift */; };
+		1EB545D22DD5666B0070B0A0 /* SetStartDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545D12DD5666B0070B0A0 /* SetStartDateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutAppView.swift; sourceTree = "<group>"; };
 		1EB545CD2DD53E5E0070B0A0 /* RenameHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameHabitView.swift; sourceTree = "<group>"; };
 		1EB545CF2DD541490070B0A0 /* HabitOptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitOptionsView.swift; sourceTree = "<group>"; };
+		1EB545D12DD5666B0070B0A0 /* SetStartDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetStartDateView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -124,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				1EB545782DD3B49D0070B0A0 /* ContentView.swift */,
+				1EB545D12DD5666B0070B0A0 /* SetStartDateView.swift */,
 				1EB545CF2DD541490070B0A0 /* HabitOptionsView.swift */,
 				1EB545CD2DD53E5E0070B0A0 /* RenameHabitView.swift */,
 				1EB545C12DD4CEB90070B0A0 /* AboutAppView.swift */,
@@ -306,6 +309,7 @@
 				1EB545C22DD4CEB90070B0A0 /* AboutAppView.swift in Sources */,
 				1EB545B72DD411750070B0A0 /* PriorityHabitView.swift in Sources */,
 				1EB545BC2DD4387F0070B0A0 /* TipJarView.swift in Sources */,
+				1EB545D22DD5666B0070B0A0 /* SetStartDateView.swift in Sources */,
 				1EB545BE2DD4C0DE0070B0A0 /* EllipsisMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

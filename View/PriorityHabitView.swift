@@ -3,13 +3,14 @@ import SwiftUI
 struct PriorityHabitView: View {
     // Sheet enum for clarity
     private enum ActiveSheet: Identifiable {
-        case rename, setGoal, options, tipJar
+        case rename, setGoal, options, tipJar, setStartDate
         var id: Int {
             switch self {
             case .rename: return 0
             case .setGoal: return 1
             case .options: return 2
             case .tipJar: return 3
+            case .setStartDate: return 4
             }
         }
     }
@@ -21,6 +22,7 @@ struct PriorityHabitView: View {
     var onSetGoal: (Int) -> Void
     var onResetStreak: () -> Void
     var onTitleChanged: (String) -> Void
+    var onSetDate: () -> Void
     @State private var showResetConfirmation = false
     @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
@@ -35,7 +37,8 @@ struct PriorityHabitView: View {
         onResetRecord: @escaping () -> Void,
         onSetGoal: @escaping (Int) -> Void,
         onResetStreak: @escaping () -> Void,
-        onTitleChanged: @escaping (String) -> Void
+        onTitleChanged: @escaping (String) -> Void,
+        onSetDate: @escaping () -> Void
     ) {
         self.habit = habit
         self.tempDate = tempDate
@@ -45,13 +48,46 @@ struct PriorityHabitView: View {
         self.onSetGoal = onSetGoal
         self.onResetStreak = onResetStreak
         self.onTitleChanged = onTitleChanged
+        self.onSetDate = onSetDate
         _habitTitle = State(initialValue: habit.title)
     }
 
     var body: some View {
-        VStack(spacing: 4) {
-            Text(habit.title)
-                .font(.headline)
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.green.opacity(0.2), Color.green.opacity(0.05)]),
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(Color.green.opacity(0.4), lineWidth: 1)
+                )
+                .shadow(color: .green.opacity(0.25), radius: 8, x: 0, y: 4)
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        activeSheet = .tipJar
+                    }) {
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(.pink)
+                            .padding(8)
+                            .background(Color.white.opacity(0.6))
+                            .clipShape(Circle())
+                    }
+                    .padding(10)
+                }
+                Spacer()
+            }
+            VStack(spacing: 4) {
+            Text("🔥 \(habit.title)")
+                .font(.title2)
+                .fontWeight(.bold)
+                .foregroundColor(.green)
             Text("Day \(habit.daysFree)")
                 .font(.system(size: 52, weight: .bold))
             if let goal = habit.goalDays {
@@ -59,7 +95,7 @@ struct PriorityHabitView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
-            Text("🏆 \(habit.recordDisplayText)")
+            Text("🏆\(habit.recordDisplayText)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
@@ -79,42 +115,14 @@ struct PriorityHabitView: View {
                         .padding(.horizontal, 8)
                 }
             }
-            if isEditingDate {
-                DatePicker(
-                    "Start Date",
-                    selection: Binding(
-                        get: { tempDate },
-                        set: { newDate in
-                            onDateChanged(newDate)
-                            isEditingDate = false
-                        }
-                    ),
-                    in: ...Date(),
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(.graphical)
-                .padding(.top, 8)
             }
-
-            HStack {
-                Button(action: {
-                    activeSheet = .tipJar
-                }) {
-                    Label("Tip Jar", systemImage: "heart.fill")
-                        .font(.caption)
-                        .foregroundColor(.pink)
-                }
-                Spacer()
-            }
+            .padding(.horizontal, 8)
+            .padding(.top, 4)
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color(uiColor: UIColor.secondarySystemBackground))
-        )
         .padding(.horizontal)
-        .padding(.top, -8)
+        .padding(.vertical, 8)
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .rename:
@@ -128,6 +136,7 @@ struct PriorityHabitView: View {
                 }
             case .options:
                 HabitOptionsView(
+                    onSetDate: { activeSheet = .setStartDate },
                     onRename: { activeSheet = .rename },
                     onSetGoal: { activeSheet = .setGoal },
                     onResetStreak: { showResetConfirmation = true },
@@ -135,6 +144,10 @@ struct PriorityHabitView: View {
                 )
             case .tipJar:
                 TipJarView()
+            case .setStartDate:
+                SetStartDateView(currentStartDate: tempDate) { newDate in
+                    onDateChanged(newDate)
+                }
             }
         }
         .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
@@ -165,6 +178,7 @@ struct PriorityHabitView: View {
         onResetRecord: {},
         onSetGoal: { _ in },
         onResetStreak: {},
-        onTitleChanged: { _ in }
+        onTitleChanged: { _ in },
+        onSetDate: {}
     )
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct HabitOptionsView: View {
     @Environment(\.dismiss) private var dismiss
 
+    var onSetDate: () -> Void
     var onRename: () -> Void
     var onSetGoal: () -> Void
     var onResetStreak: () -> Void
@@ -19,6 +20,12 @@ struct HabitOptionsView: View {
         NavigationView {
             List {
                 Section {
+                    Button {
+                        onSetDate()
+                    } label: {
+                        Label("Set Start Date", systemImage: "calendar")
+                    }
+
                     Button {
                         onRename()
                     } label: {
@@ -61,6 +68,7 @@ struct HabitOptionsView: View {
 
 #Preview {
     HabitOptionsView(
+        onSetDate: {},
         onRename: {},
         onSetGoal: {},
         onResetStreak: {},

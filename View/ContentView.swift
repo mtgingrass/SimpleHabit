@@ -24,7 +24,8 @@ struct ContentView: View {
         ZStack(alignment: .topTrailing) {
             Color(.systemBackground)
                 .ignoresSafeArea()
-            VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 0) {
                 // Top-right toggle and ellipsis icon
                 HStack {
                     HStack(spacing: 6) {
@@ -77,6 +78,9 @@ struct ContentView: View {
                         },
                         onTitleChanged: { newTitle in
                             viewModel.updateTitle(for: main.id, to: newTitle)
+                        },
+                        onSetDate: {
+                            mainTempDate = main.startDate
                         }
                     )
                     .onAppear {
@@ -130,6 +134,7 @@ struct ContentView: View {
                 }
                 Spacer(minLength: 0)
             }
+        }
         }
         .preferredColorScheme(isDarkMode ? .dark : .light)
         .sheet(isPresented: $showAbout) {

@@ -10,12 +10,13 @@ import SwiftUI
 struct HabitView: View {
     // MARK: - Sheet management
     private enum ActiveSheet: Identifiable {
-        case rename, setGoal, options
+        case rename, setGoal, options, setStartDate
         var id: Int {
             switch self {
             case .rename: return 0
             case .setGoal: return 1
             case .options: return 2
+            case .setStartDate: return 3
             }
         }
     }
@@ -26,7 +27,6 @@ struct HabitView: View {
     var onSetGoal: (Int) -> Void
     var onResetStreak: () -> Void
     @State private var showResetConfirmation = false
-    @State private var isEditingDate = false
     @State private var showResetRecordConfirmation = false
     @State private var tempStartDate: Date
     @State private var habitTitle: String
@@ -61,7 +61,7 @@ struct HabitView: View {
                 Spacer()
             }
 
-            Text("🔥 Current Streak: \(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
+            Text("🔥 Streak: \(habit.daysFree) \(habit.daysFree == 1 ? "day" : "days")")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.orange)
@@ -89,22 +89,8 @@ struct HabitView: View {
                         .padding(.horizontal, 8)
                 }
             }
-            if isEditingDate {
-                DatePicker(
-                    "Start Date",
-                    selection: $tempStartDate,
-                    in: ...Date(),
-                    displayedComponents: [.date]
-                )
-                .datePickerStyle(.graphical)
-                .padding(.top, 8)
-                .onChange(of: tempStartDate) { _, newValue in
-                    onDateChanged(newValue)
-                    isEditingDate = false
-                }
-            }
 
-            Text("🏆 \(habit.recordDisplayText)")
+            Text("🏆\(habit.recordDisplayText)")
                 .font(.subheadline)
                 .fontWeight(.semibold)
                 .foregroundColor(.yellow)
@@ -118,6 +104,7 @@ struct HabitView: View {
             switch sheet {
             case .options:
                 HabitOptionsView(
+                    onSetDate: { activeSheet = .setStartDate },
                     onRename: { activeSheet = .rename },
                     onSetGoal: { activeSheet = .setGoal },
                     onResetStreak: { showResetConfirmation = true },
@@ -131,6 +118,11 @@ struct HabitView: View {
             case .setGoal:
                 SetGoalView { goal in
                     onSetGoal(goal)
+                }
+            case .setStartDate:
+                SetStartDateView(currentStartDate: tempStartDate) { newDate in
+                    tempStartDate = newDate
+                    onDateChanged(newDate)
                 }
             }
         }
