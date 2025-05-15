@@ -10,7 +10,7 @@
 		1EB545792DD3B49D0070B0A0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545782DD3B49D0070B0A0 /* ContentView.swift */; };
 		1EB545AD2DD3E80F0070B0A0 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545AC2DD3E80F0070B0A0 /* Habit.swift */; };
 		1EB545B12DD3E86A0070B0A0 /* HabitListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B02DD3E86A0070B0A0 /* HabitListViewModel.swift */; };
-		1EB545B52DD3EAC70070B0A0 /* HabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B42DD3EAC70070B0A0 /* HabitView.swift */; };
+		1EB545B52DD3EAC70070B0A0 /* HabitRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B42DD3EAC70070B0A0 /* HabitRowView.swift */; };
 		1EB545B72DD411750070B0A0 /* PriorityHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */; };
 		1EB545BC2DD4387F0070B0A0 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */; };
 		1EB545BE2DD4C0DE0070B0A0 /* EllipsisMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB545BD2DD4C0DE0070B0A0 /* EllipsisMenu.swift */; };
@@ -45,7 +45,7 @@
 		1EB5458A2DD3B49E0070B0A0 /* SimpleHabitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimpleHabitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EB545AC2DD3E80F0070B0A0 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		1EB545B02DD3E86A0070B0A0 /* HabitListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitListViewModel.swift; sourceTree = "<group>"; };
-		1EB545B42DD3EAC70070B0A0 /* HabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitView.swift; sourceTree = "<group>"; };
+		1EB545B42DD3EAC70070B0A0 /* HabitRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRowView.swift; sourceTree = "<group>"; };
 		1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityHabitView.swift; sourceTree = "<group>"; };
 		1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
 		1EB545BD2DD4C0DE0070B0A0 /* EllipsisMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EllipsisMenu.swift; sourceTree = "<group>"; };
@@ -126,8 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				1EB545782DD3B49D0070B0A0 /* ContentView.swift */,
-				1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */,
-				1EB545B42DD3EAC70070B0A0 /* HabitView.swift */,
+				1EB545B42DD3EAC70070B0A0 /* HabitRowView.swift */,
 				1EB545B62DD411750070B0A0 /* PriorityHabitView.swift */,
 			);
 			path = Screenss;
@@ -161,6 +160,7 @@
 		1EB545F22DD674640070B0A0 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1EB545BB2DD4387F0070B0A0 /* TipJarView.swift */,
 				1EB545D12DD5666B0070B0A0 /* SetStartDateView.swift */,
 				1EB545CF2DD541490070B0A0 /* HabitOptionsView.swift */,
 				1EB545CD2DD53E5E0070B0A0 /* RenameHabitView.swift */,
@@ -321,7 +321,7 @@
 				1EB545B12DD3E86A0070B0A0 /* HabitListViewModel.swift in Sources */,
 				1EB545D02DD541490070B0A0 /* HabitOptionsView.swift in Sources */,
 				1EB545CE2DD53E5E0070B0A0 /* RenameHabitView.swift in Sources */,
-				1EB545B52DD3EAC70070B0A0 /* HabitView.swift in Sources */,
+				1EB545B52DD3EAC70070B0A0 /* HabitRowView.swift in Sources */,
 				1EB545C22DD4CEB90070B0A0 /* AboutAppView.swift in Sources */,
 				1EB545B72DD411750070B0A0 /* PriorityHabitView.swift in Sources */,
 				1EB545BC2DD4387F0070B0A0 /* TipJarView.swift in Sources */,

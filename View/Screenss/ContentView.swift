@@ -121,7 +121,7 @@ struct ContentView: View {
                         .padding(.leading)
                     List {
                         ForEach(Array(zip(viewModel.habits.indices, $viewModel.habits)).filter { !$0.1.wrappedValue.isMain }, id: \.0) { index, habitBinding in
-                            HabitView(
+                            HabitRowView(
                                 habit: habitBinding,
                                 resetAction: { viewModel.resetStartDate(for: habitBinding.wrappedValue.id) },
                                 onDateChanged: { newDate in

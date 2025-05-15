@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HabitView: View {
+struct HabitRowView: View {
     // MARK: - Sheet management
     private enum ActiveSheet: Identifiable {
         case rename, setGoal, options, setStartDate
@@ -112,22 +112,56 @@ struct HabitView: View {
                 }
             }
         }
-        .onTapGesture {
-            activeSheet = .options
-        }
         .padding()
         .frame(maxWidth: .infinity)
         .background(Color(uiColor: UIColor.secondarySystemBackground))
-        .cornerRadius(12)
-        .padding(.horizontal)
+        .onTapGesture {
+            activeSheet = .options
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+            Button(role: .destructive) {
+                onResetStreak()
+            } label: {
+                Label {
+                    Text("Reset\nStreak")
+                } icon: {
+                    Image(systemName: "arrow.uturn.backward")
+                }
+            }
+
+            Button(role: .destructive) {
+                showResetRecordConfirmation = true
+            } label: {
+                Label {
+                    Text("Reset\nRecord")
+                } icon: {
+                    Image(systemName: "trash")
+                }
+            }
+        }
+        .swipeActions(edge: .leading, allowsFullSwipe: false) {
+            Button {
+                activeSheet = .setGoal
+            } label: {
+                Label("Set Goal", systemImage: "target")
+            }
+
+            Button {
+                activeSheet = .setStartDate
+            } label: {
+                Label("Set Date", systemImage: "calendar")
+            }
+        }
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .options:
                 HabitOptionsView(
                     onSetDate: { activeSheet = .setStartDate },
                     onRename: { activeSheet = .rename },
-                    onSetGoal: { activeSheet = .setGoal },
-                    onResetStreak: { showResetConfirmation = true },
+                    onSetGoal: {
+                        activeSheet = .setGoal
+                    },
+                    onResetStreak: { onResetStreak() },
                     onResetRecord: { showResetRecordConfirmation = true }
                 )
             case .rename:
@@ -146,14 +180,6 @@ struct HabitView: View {
                 }
             }
         }
-        .alert("Reset streak for \(habit.title)?", isPresented: $showResetConfirmation) {
-            Button("Reset", role: .destructive) {
-                onResetStreak()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("This will reset your current streak to Day 1.")
-        }
         .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
             Button("Reset", role: .destructive) {
                 onResetRecord()
@@ -168,7 +194,7 @@ struct HabitView: View {
 
 #Preview {
     VStack(spacing: 12) {
-        HabitView(
+        HabitRowView(
             habit: .constant(Habit(id: UUID(), title: "Workout", startDate: Date().addingTimeInterval(-86400 * 3), goalDays: 10, isMain: false, recordDays: 6)),
             resetAction: {},
             onDateChanged: { _ in },
@@ -178,7 +204,7 @@ struct HabitView: View {
             onTitleChanged: { _ in }
         )
 
-        HabitView(
+        HabitRowView(
             habit: .constant(Habit(id: UUID(), title: "Reading", startDate: Date().addingTimeInterval(-86400 * 1), goalDays: 5, isMain: false, recordDays: 3)),
             resetAction: {},
             onDateChanged: { _ in },
@@ -188,7 +214,7 @@ struct HabitView: View {
             onTitleChanged: { _ in }
         )
 
-        HabitView(
+        HabitRowView(
             habit: .constant(Habit(id: UUID(), title: "Journaling", startDate: Date().addingTimeInterval(-86400 * 2), goalDays: 7, isMain: false, recordDays: 4)),
             resetAction: {},
             onDateChanged: { _ in },

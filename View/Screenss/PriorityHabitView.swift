@@ -53,34 +53,22 @@ struct PriorityHabitView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(
-                    LinearGradient(
-                        gradient: Gradient(colors: [Color.green.opacity(0.2), Color.green.opacity(0.05)]),
-                        startPoint: .top,
-                        endPoint: .bottom
+        VStack(spacing: 0) {
+            ZStack(alignment: .topTrailing) {
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.green.opacity(0.2), Color.green.opacity(0.05)]),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
                     )
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.green.opacity(0.4), lineWidth: 1)
-                )
-                .shadow(color: .green.opacity(0.25), radius: 8, x: 0, y: 4)
-            VStack {
-                Spacer()
-                Button(action: {
-                    activeSheet = .tipJar
-                }) {
-                    Image(systemName: "heart.fill")
-                        .foregroundColor(.pink)
-                        .padding(2)
-                        .background(Color.white.opacity(0.6))
-                        .clipShape(Circle())
-                }
-                .padding(10)
-            }
-            ZStack {
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color.green.opacity(0.4), lineWidth: 1)
+                    )
+                    .shadow(color: .green.opacity(0.25), radius: 8, x: 0, y: 4)
+
                 HStack(alignment: .center, spacing: 8) {
                     VStack(alignment: .center, spacing: 0) {
                         Text("🔥 \(habit.title)")
@@ -123,58 +111,50 @@ struct PriorityHabitView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                .padding(.horizontal, 16)
+                .background(Color.clear)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     activeSheet = .options
                 }
-                .padding(.horizontal, 16)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-        .frame(height: 150)
-        .padding(.horizontal)
-        .padding(.vertical, 4)
-        .sheet(item: $activeSheet) { sheet in
-            switch sheet {
-            case .rename:
-                RenameHabitView(currentTitle: habitTitle) { newTitle in
-                    habitTitle = newTitle
-                    onTitleChanged(newTitle)
+                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        showResetConfirmation = true
+                    } label: {
+                        Label {
+                            Text("Reset\nStreak")
+                        } icon: {
+                            Image(systemName: "arrow.uturn.backward")
+                        }
+                    }
+
+                    Button(role: .destructive) {
+                        showResetRecordConfirmation = true
+                    } label: {
+                        Label {
+                            Text("Reset\nRecord")
+                        } icon: {
+                            Image(systemName: "trash")
+                        }
+                    }
                 }
-            case .setGoal:
-                SetGoalView { goal in
-                    onSetGoal(goal)
-                }
-            case .options:
-                HabitOptionsView(
-                    onSetDate: { activeSheet = .setStartDate },
-                    onRename: { activeSheet = .rename },
-                    onSetGoal: { activeSheet = .setGoal },
-                    onResetStreak: { showResetConfirmation = true },
-                    onResetRecord: { showResetRecordConfirmation = true }
-                )
-            case .tipJar:
-                TipJarView()
-            case .setStartDate:
-                SetStartDateView(currentStartDate: tempDate) { newDate in
-                    onDateChanged(newDate)
+                .swipeActions(edge: .leading, allowsFullSwipe: false) {
+                    Button {
+                        activeSheet = .setGoal
+                    } label: {
+                        Label("Set Goal", systemImage: "target")
+                    }
+
+                    Button {
+                        activeSheet = .setStartDate
+                    } label: {
+                        Label("Set Date", systemImage: "calendar")
+                    }
                 }
             }
-        }
-        .alert("Reset record for \(habit.title)?", isPresented: $showResetRecordConfirmation) {
-            Button("Reset", role: .destructive) {
-                onResetRecord()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("This will reset your record to your current streak of \(habit.daysFree) day\(habit.daysFree == 1 ? "" : "s").")
-        }
-        .alert("Reset streak for \(habit.title)?", isPresented: $showResetConfirmation) {
-            Button("Reset", role: .destructive) {
-                onResetStreak()
-            }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("This will reset your current streak to Day 1.")
+            .frame(height: 150)
+            .padding(.horizontal)
+            .padding(.vertical, 4)
         }
     }
 }

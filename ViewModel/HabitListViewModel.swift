@@ -52,7 +52,7 @@ class HabitListViewModel: ObservableObject {
 
     func updateGoal(for id: UUID, to goal: Int?) {
         if let index = habits.firstIndex(where: { $0.id == id }) {
-            habits[index].goalDays = goal
+            habits[index].goalDays = (goal ?? 0) > 0 ? goal : nil
             saveHabits()
         }
     }

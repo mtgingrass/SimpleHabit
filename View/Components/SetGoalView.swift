@@ -82,6 +82,16 @@ var body: some View {
             .cornerRadius(8)
         }
 
+        Button("Clear Goal") {
+            onSelect(0)
+            dismiss()
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.red.opacity(0.1))
+        .cornerRadius(8)
+        .foregroundColor(.red)
+
         Divider()
         Spacer()
     }
