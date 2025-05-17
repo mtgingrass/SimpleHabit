@@ -11,7 +11,7 @@ import SwiftUI
 struct SimpleHabitApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            //ContentView()
         }
     }
 }
