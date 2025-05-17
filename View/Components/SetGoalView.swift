@@ -14,6 +14,8 @@ struct SetGoalView: View {
     @State private var isJustForToday = false
     @State private var goalType: GoalType = .weeks
     @State private var goalAmount: String = "10"
+    @State private var isLenient = false
+    @State private var showLenientInfo = false
 
     var body: some View {
         NavigationView {
@@ -44,11 +46,26 @@ struct SetGoalView: View {
                                         Text(day.shortName)
                                             .fontWeight(.medium)
                                             .frame(width: 40, height: 40)
-                                            .background(selectedDays.contains(day) ? Color.blue.opacity(0.2) : Color.gray.opacity(0.1))
-                                            .cornerRadius(8)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(selectedDays.contains(day) ? Color.blue : Color.gray.opacity(0.2))
+                                            )
+                                            .foregroundColor(selectedDays.contains(day) ? .white : .primary)
                                     }
+                                    .buttonStyle(PlainButtonStyle())
                                 }
                             }
+                            HStack {
+                                Toggle("Lenient tracking", isOn: $isLenient)
+                                    .font(.subheadline)
+
+                                Image(systemName: "info.circle")
+                                    .foregroundColor(.blue)
+                                    .onTapGesture {
+                                        showLenientInfo = true
+                                    }
+                            }
+                            .padding(.top, 8)
                         }
                         .padding(.vertical)
                     }
@@ -72,8 +89,8 @@ struct SetGoalView: View {
                     Button("Set Goal") {
                         let target = Int(goalAmount) ?? 0
                         let goal = isJustForToday ?
-                            GoalConfig(isJustForToday: true, daysOfWeek: [], targetCountPerWeek: 1, goalType: goalType, goalTarget: target) :
-                            GoalConfig(isJustForToday: false, daysOfWeek: Array(selectedDays), targetCountPerWeek: selectedDays.count, goalType: goalType, goalTarget: target)
+                            GoalConfig(isJustForToday: true, daysOfWeek: [], targetCountPerWeek: 1, goalType: goalType, goalTarget: target, isLenient: false) :
+                            GoalConfig(isJustForToday: false, daysOfWeek: Array(selectedDays), targetCountPerWeek: selectedDays.count, goalType: goalType, goalTarget: target, isLenient: isLenient)
 
                         onSelect(goal)
                         dismiss()
@@ -99,6 +116,13 @@ struct SetGoalView: View {
                     }
                 }
             }
+            .alert(isPresented: $showLenientInfo) {
+                Alert(
+                    title: Text("What is Lenient Tracking?"),
+                    message: Text("With lenient tracking, it doesn't matter which days you do the habit. As long as you complete it the desired number of times in a week, it's counted as successful."),
+                    dismissButton: .default(Text("Got it!"))
+                )
+            }
         }
     }
 }
@@ -109,8 +133,9 @@ struct GoalConfig {
     var targetCountPerWeek: Int
     var goalType: GoalType
     var goalTarget: Int
+    var isLenient: Bool
 
-    static let cleared = GoalConfig(isJustForToday: false, daysOfWeek: [], targetCountPerWeek: 0, goalType: .weeks, goalTarget: 0)
+    static let cleared = GoalConfig(isJustForToday: false, daysOfWeek: [], targetCountPerWeek: 0, goalType: .weeks, goalTarget: 0, isLenient: false)
 }
 
 enum GoalType: String, CaseIterable, Identifiable {
